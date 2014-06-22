@@ -1,7 +1,7 @@
 package eu.rapasoft.util;
 
-import eu.rapasoft.component.InputGridPane;
 import eu.rapasoft.model.ColorFrequency;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
 
@@ -13,7 +13,7 @@ import java.util.Set;
  */
 public class LayoutBuilder {
 
-    public static void appendToLayout(Set<ColorFrequency> frequencies, InputGridPane inputGridPane) {
+    public static void appendToLayout(Set<ColorFrequency> frequencies, GridPane inputGridPane) {
         int row = 2;
         int column = 0;
         for (ColorFrequency colorFrequency : frequencies) {

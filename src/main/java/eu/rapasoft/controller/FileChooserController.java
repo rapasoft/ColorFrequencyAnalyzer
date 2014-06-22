@@ -1,18 +1,19 @@
 package eu.rapasoft.controller;
 
-import eu.rapasoft.component.InputGridPane;
 import eu.rapasoft.model.ColorFrequency;
 import eu.rapasoft.service.DialogService;
 import eu.rapasoft.service.FrequencyAnalyzerService;
 import eu.rapasoft.service.ImageService;
 import eu.rapasoft.util.LayoutBuilder;
-import javafx.scene.control.Button;
+import eu.rapasoft.weld.InputGrid;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.GridPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import java.io.File;
 import java.io.IOException;
@@ -24,12 +25,13 @@ import java.util.Set;
 @ApplicationScoped
 public class FileChooserController {
 
-    final FileChooser fileChooser;
+    private FileChooser fileChooser;
 
     private Stage stage;
 
     @Inject
-    private InputGridPane inputGridPane;
+    @InputGrid
+    private Instance<GridPane> inputGridPaneInstance;
 
     @Inject
     private FrequencyAnalyzerService frequencyAnalyzerService;
@@ -40,32 +42,26 @@ public class FileChooserController {
     @Inject
     private DialogService dialogService;
 
-    public FileChooserController() {
-        fileChooser = new FileChooser();
-    }
-
     public void initStage(@Observes Stage stage) {
         this.stage = stage;
+        this.fileChooser = new FileChooser();
     }
 
-    public void handleFileSelection(Button openButton) {
+    public void handleFileSelection() {
         File file = fileChooser.showOpenDialog(stage);
+        GridPane inputGridPane = inputGridPaneInstance.get();
 
         if (file != null) {
             inputGridPane.getChildren().clear();
-            inputGridPane.add(openButton, 0, 0);
-            openButton.setText("Please wait...");
             try {
                 openFile(file, inputGridPane);
             } catch (Exception ex) {
                 dialogService.showErrorDialog(ex);
-            } finally {
-                openButton.setText("Open a Picture...");
             }
         }
     }
 
-    private void openFile(File file, InputGridPane inputGridPane) throws IOException {
+    private void openFile(File file, GridPane inputGridPane) throws IOException {
         ImageView iv = new ImageView(imageService.loadFxImage(file));
         iv.setFitWidth(500);
         iv.setPreserveRatio(true);
@@ -73,4 +69,5 @@ public class FileChooserController {
         Set<ColorFrequency> frequencies = frequencyAnalyzerService.computeFrequencies(file);
         LayoutBuilder.appendToLayout(frequencies, inputGridPane);
     }
+
 }

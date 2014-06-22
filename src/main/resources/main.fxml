@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8"
+            fx:controller="eu.rapasoft.controller.MainController" prefWidth="700" prefHeight="500">
+    <children>
+        <MenuBar prefHeight="25.0" AnchorPane.rightAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.topAnchor="0">
+            <menus>
+                <Menu mnemonicParsing="false" text="File">
+                    <items>
+                        <MenuItem fx:id="loadImageButton" mnemonicParsing="false" text="Load image"/>
+                        <MenuItem fx:id="closeButton" mnemonicParsing="false" text="Close"/>
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Help">
+                    <items>
+                        <MenuItem mnemonicParsing="false" text="About"/>
+                    </items>
+                </Menu>
+            </menus>
+        </MenuBar>
+        <ScrollPane AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0"
+                    AnchorPane.topAnchor="25">
+            <content>
+                <GridPane fx:id="inputGridPane" AnchorPane.leftAnchor="0" AnchorPane.topAnchor="0"
+                          AnchorPane.rightAnchor="0" AnchorPane.bottomAnchor="0"/>
+            </content>
+        </ScrollPane>
+    </children>
+</AnchorPane>
