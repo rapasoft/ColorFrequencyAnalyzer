@@ -20,18 +20,26 @@ import javax.enterprise.context.ApplicationScoped;
 public class DialogService {
 
     public void showErrorDialog(Exception ex) {
+        openDialog(ex.getMessage());
+    }
+
+    public void showAboutDialog() {
+        String version = "Version 1.0";
+        openDialog(version);
+    }
+
+    private void openDialog(String message) {
         final Stage dialogStage = new Stage();
         dialogStage.initModality(Modality.WINDOW_MODAL);
-        Button closeButton = new Button("Image loading has failed...");
+        Button closeButton = new Button("Close");
         closeButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
                 dialogStage.close();
             }
         });
-        ex.printStackTrace();
         dialogStage.setScene(new Scene(VBoxBuilder.create().
-                children(new Text(ex.getMessage()), closeButton).
+                children(new Text(message), closeButton).
                 alignment(Pos.CENTER).padding(new Insets(5)).build()));
         dialogStage.show();
     }

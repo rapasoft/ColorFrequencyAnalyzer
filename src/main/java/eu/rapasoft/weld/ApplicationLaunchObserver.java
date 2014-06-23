@@ -2,7 +2,6 @@ package eu.rapasoft.weld;
 
 import eu.rapasoft.event.WindowClosedEventHandlerFactory;
 import javafx.scene.Scene;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
@@ -20,11 +19,10 @@ public class ApplicationLaunchObserver {
     public void init(@Observes Stage stage) {
         Pane rootGridPane = weldFXMLLoader.load("main.fxml");
 
-        ScrollPane scrollPane = new ScrollPane(rootGridPane);
-        stage.setScene(new Scene(scrollPane));
+        stage.setScene(new Scene(rootGridPane));
         stage.setWidth(800);
         stage.setHeight(600);
-        stage.setOnCloseRequest(new WindowClosedEventHandlerFactory().windowClosedEventHandler());
+        stage.setOnCloseRequest(WindowClosedEventHandlerFactory.windowClosedEventHandler());
 
         stage.show();
 
