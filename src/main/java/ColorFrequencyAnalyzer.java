@@ -11,14 +11,13 @@ import org.jboss.weld.environment.se.WeldContainer;
  */
 public class ColorFrequencyAnalyzer extends Application {
 
+
     public static void main(String[] args) {
         Application.launch(args);
     }
 
     @Override
     public void start(final Stage stage) {
-        stage.setTitle("PNG Color Frequency Analyser");
-
         final Weld weld = new Weld();
         WeldContainer weldContainer = weld.initialize();
         Runtime.getRuntime().addShutdownHook(new ShutdownHook(weld));

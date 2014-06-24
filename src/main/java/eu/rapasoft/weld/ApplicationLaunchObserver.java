@@ -1,6 +1,7 @@
 package eu.rapasoft.weld;
 
 import eu.rapasoft.event.WindowClosedEventHandlerFactory;
+import eu.rapasoft.util.ApplicationProperties;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
@@ -14,11 +15,15 @@ import javax.inject.Inject;
 public class ApplicationLaunchObserver {
 
     @Inject
-    WeldFXMLLoader weldFXMLLoader;
+    private WeldFXMLLoader weldFXMLLoader;
+
+    @Inject
+    private ApplicationProperties applicationProperties;
 
     public void init(@Observes Stage stage) {
         Pane rootGridPane = weldFXMLLoader.load("main.fxml");
 
+        stage.setTitle(applicationProperties.getApplicationName());
         stage.setScene(new Scene(rootGridPane));
         stage.setWidth(1024);
         stage.setHeight(768);

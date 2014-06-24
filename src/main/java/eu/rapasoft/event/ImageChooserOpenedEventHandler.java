@@ -6,7 +6,7 @@ import javafx.event.EventHandler;
 
 import javax.inject.Inject;
 
-public class ImageChooserEventHandler implements EventHandler<ActionEvent> {
+public class ImageChooserOpenedEventHandler implements EventHandler<ActionEvent> {
 
     @Inject
     private FileChooserController fileChooserController;

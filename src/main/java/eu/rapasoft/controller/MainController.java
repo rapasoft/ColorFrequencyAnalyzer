@@ -1,11 +1,9 @@
 package eu.rapasoft.controller;
 
-import eu.rapasoft.event.ImageChooserEventHandler;
+import eu.rapasoft.event.AboutDialogOpenedEventHandler;
+import eu.rapasoft.event.ImageChooserOpenedEventHandler;
 import eu.rapasoft.event.WindowClosedEventHandlerFactory;
-import eu.rapasoft.service.DialogService;
 import eu.rapasoft.weld.InputGrid;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.MenuItem;
@@ -26,9 +24,9 @@ public class MainController implements Initializable {
     @FXML
     public MenuItem aboutButton;
     @Inject
-    private ImageChooserEventHandler imageChooserEventHandler;
+    private ImageChooserOpenedEventHandler imageChooserOpenedEventHandler;
     @Inject
-    private DialogService dialogService;
+    private AboutDialogOpenedEventHandler aboutDialogOpenedEventHandler;
     @FXML
     private MenuItem loadImageButton;
     @FXML
@@ -38,14 +36,9 @@ public class MainController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        loadImageButton.setOnAction(imageChooserEventHandler);
+        loadImageButton.setOnAction(imageChooserOpenedEventHandler);
         closeButton.setOnAction(WindowClosedEventHandlerFactory.actionClosedEventHandler());
-        aboutButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                dialogService.showAboutDialog();
-            }
-        });
+        aboutButton.setOnAction(aboutDialogOpenedEventHandler);
     }
 
     @Produces

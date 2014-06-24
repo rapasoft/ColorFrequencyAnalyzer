@@ -1,8 +1,7 @@
 package eu.rapasoft.service;
 
+import eu.rapasoft.event.WindowClosedEventHandlerFactory;
 import eu.rapasoft.util.ApplicationProperties;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -37,14 +36,10 @@ public class DialogService {
     private void openDialog(String message) {
         final Stage dialogStage = new Stage();
         dialogStage.initModality(Modality.WINDOW_MODAL);
+        dialogStage.setTitle(applicationProperties.getApplicationName());
 
         Button closeButton = new Button("Close");
-        closeButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent actionEvent) {
-                dialogStage.close();
-            }
-        });
+        closeButton.setOnAction(WindowClosedEventHandlerFactory.actionClosedEventHandler(dialogStage));
 
         Scene dialogScene = new Scene(VBoxBuilder.create()
                 .children(new Text(message), closeButton)

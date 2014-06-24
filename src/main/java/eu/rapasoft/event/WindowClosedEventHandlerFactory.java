@@ -38,4 +38,12 @@ public class WindowClosedEventHandlerFactory {
         };
     }
 
+    public static EventHandler<ActionEvent> actionClosedEventHandler(final Stage dialogStage) {
+        return new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                dialogStage.close();
+            }
+        };
+    }
 }

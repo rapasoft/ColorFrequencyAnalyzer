@@ -16,6 +16,7 @@ public class ApplicationProperties {
     private static final String VERSION = "version";
     private static final String AUTHOR = "author";
     private static final String APPLICATION_PROPERTIES_FILE_PATH = "/application.properties";
+    private static final String APPLICATION_NAME = "applicationName";
 
     private Properties properties = new Properties();
 
@@ -36,6 +37,10 @@ public class ApplicationProperties {
 
     public String getAuthor() {
         return (String) properties.get(AUTHOR);
+    }
+
+    public String getApplicationName() {
+        return (String) properties.get(APPLICATION_NAME);
     }
 
 }
