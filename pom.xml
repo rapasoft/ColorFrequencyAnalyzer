@@ -7,9 +7,16 @@
     <groupId>ColorFrequency</groupId>
     <artifactId>ColorFrequency</artifactId>
     <version>1.0</version>
+    <developers>
+        <developer>
+            <name>Pavol Rajzak</name>
+            <email>rapasoft@rapasoft.eu</email>
+            <url>www.rapasoft.eu</url>
+        </developer>
+    </developers>
 
     <properties>
-        <appVersion>${version}</appVersion>
+        <author>Pavol Rajzak, www.rapasoft.eu</author>
     </properties>
 
     <dependencies>
@@ -44,9 +51,18 @@
         <resources>
             <resource>
                 <directory>src/main/resources</directory>
+                <filtering>true</filtering>
             </resource>
         </resources>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>2.6</version>
+                <configuration>
+                    <encoding>UTF-8</encoding>
+                </configuration>
+            </plugin>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>2.5</version>

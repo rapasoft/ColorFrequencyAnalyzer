@@ -1,5 +1,6 @@
 package eu.rapasoft.controller;
 
+import eu.rapasoft.exception.ImageFileException;
 import eu.rapasoft.model.ColorFrequency;
 import eu.rapasoft.service.DialogService;
 import eu.rapasoft.service.FrequencyAnalyzerService;
@@ -16,7 +17,6 @@ import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import java.io.File;
-import java.io.IOException;
 import java.util.Set;
 
 /**
@@ -55,19 +55,20 @@ public class FileChooserController {
             inputGridPane.getChildren().clear();
             try {
                 openFile(file, inputGridPane);
-            } catch (Exception ex) {
+            } catch (ImageFileException ex) {
                 dialogService.showErrorDialog(ex);
             }
         }
     }
 
-    private void openFile(File file, GridPane inputGridPane) throws IOException {
+    private void openFile(File file, GridPane inputGridPane) throws ImageFileException {
         ImageView iv = new ImageView(imageService.loadFxImage(file));
-        iv.setFitWidth(500);
+        iv.setFitWidth(stage.getWidth() * 0.95);
         iv.setPreserveRatio(true);
-        inputGridPane.add(iv, 0, 1, 5, 1);
+        int numberOfColumns = Math.floorDiv((int) stage.getWidth(), LayoutBuilder.SQUARE_SIZE * 3);
+        inputGridPane.add(iv, 0, 1, numberOfColumns, 1);
         Set<ColorFrequency> frequencies = frequencyAnalyzerService.computeFrequencies(file);
-        LayoutBuilder.appendToLayout(frequencies, inputGridPane);
+        LayoutBuilder.appendToLayout(frequencies, inputGridPane, numberOfColumns);
     }
 
 }

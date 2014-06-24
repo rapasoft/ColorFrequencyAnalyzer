@@ -1,5 +1,7 @@
 package eu.rapasoft.model;
 
+import eu.rapasoft.service.ImageService;
+
 import java.awt.*;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -63,5 +65,9 @@ public class ColorFrequency implements Comparable<ColorFrequency> {
 
     public Color getColor() {
         return color;
+    }
+
+    public String getColorHex() {
+        return ImageService.toHex(color.getRed(), color.getGreen(), color.getBlue());
     }
 }

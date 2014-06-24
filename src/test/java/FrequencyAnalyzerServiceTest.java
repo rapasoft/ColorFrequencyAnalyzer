@@ -1,3 +1,4 @@
+import eu.rapasoft.exception.ImageFileException;
 import eu.rapasoft.service.FrequencyAnalyzerService;
 import org.junit.Assert;
 import org.junit.Test;
@@ -17,7 +18,7 @@ import java.net.URL;
 public class FrequencyAnalyzerServiceTest {
 
     @Test
-    public void testComputeFrequencies() throws IOException {
+    public void testComputeFrequencies() throws IOException, ImageFileException {
         URL filePath = getClass().getClassLoader().getResource("./wordle_lastfm_chart.PNG");
         Assert.assertTrue(filePath != null);
         new FrequencyAnalyzerService().computeFrequencies(new File(filePath.getPath()));

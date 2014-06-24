@@ -20,8 +20,8 @@ public class ApplicationLaunchObserver {
         Pane rootGridPane = weldFXMLLoader.load("main.fxml");
 
         stage.setScene(new Scene(rootGridPane));
-        stage.setWidth(800);
-        stage.setHeight(600);
+        stage.setWidth(1024);
+        stage.setHeight(768);
         stage.setOnCloseRequest(WindowClosedEventHandlerFactory.windowClosedEventHandler());
 
         stage.show();

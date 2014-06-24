@@ -1,5 +1,6 @@
 package eu.rapasoft.service;
 
+import eu.rapasoft.exception.ImageFileException;
 import eu.rapasoft.model.ColorFrequency;
 import eu.rapasoft.util.ColorComparator;
 
@@ -8,7 +9,6 @@ import javax.inject.Inject;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
 import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeMap;
@@ -23,7 +23,7 @@ public class FrequencyAnalyzerService {
     @Inject
     private ImageService imageService;
 
-    public SortedSet<ColorFrequency> computeFrequencies(File file) throws IOException {
+    public SortedSet<ColorFrequency> computeFrequencies(File file) throws ImageFileException {
         BufferedImage image = imageService.loadBufferedImage(file);
         return calculateFrequenciesPerColor(image);
     }

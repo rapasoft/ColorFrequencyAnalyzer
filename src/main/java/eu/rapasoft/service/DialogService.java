@@ -1,5 +1,6 @@
 package eu.rapasoft.service;
 
+import eu.rapasoft.util.ApplicationProperties;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -12,6 +13,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 /**
  * @author Pavol Rajzak, www.rapasoft.eu
@@ -19,18 +21,23 @@ import javax.enterprise.context.ApplicationScoped;
 @ApplicationScoped
 public class DialogService {
 
+    @Inject
+    private ApplicationProperties applicationProperties;
+
     public void showErrorDialog(Exception ex) {
-        openDialog(ex.getMessage());
+        openDialog("An error occured: " + ex.getMessage());
     }
 
     public void showAboutDialog() {
-        String version = "Version 1.0";
-        openDialog(version);
+        String version = applicationProperties.getApplicationVersion();
+        String author = applicationProperties.getAuthor();
+        openDialog("Version " + version + ", author: " + author);
     }
 
     private void openDialog(String message) {
         final Stage dialogStage = new Stage();
         dialogStage.initModality(Modality.WINDOW_MODAL);
+
         Button closeButton = new Button("Close");
         closeButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -38,9 +45,15 @@ public class DialogService {
                 dialogStage.close();
             }
         });
-        dialogStage.setScene(new Scene(VBoxBuilder.create().
-                children(new Text(message), closeButton).
-                alignment(Pos.CENTER).padding(new Insets(5)).build()));
+
+        Scene dialogScene = new Scene(VBoxBuilder.create()
+                .children(new Text(message), closeButton)
+                .spacing(20)
+                .alignment(Pos.CENTER)
+                .padding(new Insets(20))
+                .build());
+
+        dialogStage.setScene(dialogScene);
         dialogStage.show();
     }
 
