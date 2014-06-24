@@ -21,7 +21,7 @@ import java.util.TreeSet;
 public class FrequencyAnalyzerService {
 
     @Inject
-    private ImageService imageService;
+    ImageService imageService;
 
     public SortedSet<ColorFrequency> computeFrequencies(File file) throws ImageFileException {
         BufferedImage image = imageService.loadBufferedImage(file);
