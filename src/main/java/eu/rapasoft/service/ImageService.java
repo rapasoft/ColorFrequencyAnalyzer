@@ -45,7 +45,7 @@ public class ImageService {
         }
     }
 
-    private void checkFileExtension(File file) throws ImageFileException {
+    void checkFileExtension(File file) throws ImageFileException {
         String[] filenameExtension = file.getName().split("\\.");
         if (filenameExtension.length != 2) {
             throw new ImageFileException("Invalid extension");

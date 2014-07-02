@@ -18,11 +18,12 @@ import java.net.URL;
 @RunWith(value = JUnit4.class)
 public class ImageServiceTest {
 
+    private ImageService imageService = new ImageService();
+
     @Test
     public void testLoadBufferedImageFile() throws IOException, ImageFileException {
         URL filePath = getClass().getClassLoader().getResource("./wordle_lastfm_chart.PNG");
         Assert.assertTrue(filePath != null);
-        ImageService imageService = new ImageService();
         Assert.assertNotNull(imageService.loadBufferedImage(new File(filePath.getPath())));
     }
 
@@ -30,7 +31,6 @@ public class ImageServiceTest {
     public void testLoadFxImage() throws IOException, ImageFileException {
         URL filePath = getClass().getClassLoader().getResource("./wordle_lastfm_chart.PNG");
         Assert.assertTrue(filePath != null);
-        ImageService imageService = new ImageService();
         Assert.assertNotNull(imageService.loadBufferedImage(new File(filePath.getPath())));
     }
 
@@ -38,8 +38,17 @@ public class ImageServiceTest {
     public void testUnsupportedExtension() throws IOException, ImageFileException {
         URL filePath = getClass().getClassLoader().getResource("./test.me");
         Assert.assertTrue(filePath != null);
-        ImageService imageService = new ImageService();
         imageService.loadBufferedImage(new File(filePath.getPath()));
+    }
+
+    @Test
+    public void testCheckValidFileExtension() throws ImageFileException {
+        imageService.checkFileExtension(new File("hooray.png"));
+    }
+
+    @Test(expected = ImageFileException.class)
+    public void testCheckInvalidFileExtension() throws ImageFileException {
+        imageService.checkFileExtension(new File("hooray.wow"));
     }
 
     @Test
