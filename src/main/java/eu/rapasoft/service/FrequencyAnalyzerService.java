@@ -27,6 +27,9 @@ public class FrequencyAnalyzerService {
 
     public SortedSet<ColorFrequency> computeFrequencies(File file) throws ImageFileException {
         BufferedImage image = imageService.loadBufferedImage(file);
+
+        logger.info("Image loaded: " + file.getName());
+
         try {
             return calculateFrequenciesPerColor(image);
         } catch (ExecutionException | InterruptedException e) {
@@ -38,58 +41,58 @@ public class FrequencyAnalyzerService {
     private SortedSet<ColorFrequency> calculateFrequenciesPerColor(BufferedImage image) throws ExecutionException, InterruptedException {
         int numberOfThreads = Runtime.getRuntime().availableProcessors();
 
+        logger.info("Starting computation of ColorFrequencies for with " + numberOfThreads + " active threads.");
+        long startTime = System.currentTimeMillis();
+
         final ExecutorService service = Executors.newFixedThreadPool(numberOfThreads);
 
         List<Future<Set<ColorFrequency>>> futures = new ArrayList<>();
         for (int i = 0; i < numberOfThreads; i++) {
-            Callable<Set<ColorFrequency>> call = new FrequencyCalculator(image, i, numberOfThreads);
+            Callable<Set<ColorFrequency>> call = new FrequencyCalculatorThread(image, i, numberOfThreads);
             Future<Set<ColorFrequency>> result = service.submit(call);
             futures.add(result);
         }
 
-        Set<ColorFrequency> resultSet = new LinkedHashSet<>();
+        Map<String, ColorFrequency> resultMap = new LinkedHashMap<>();
         for (Future<Set<ColorFrequency>> future : futures) {
             Set<ColorFrequency> colorFrequenciesPartial = future.get();
-            logger.info("Merging " + resultSet.size() + " existing results with " + colorFrequenciesPartial.size() + " unprocessed");
+            logger.fine("Merging " + resultMap.size() + " existing results with " + colorFrequenciesPartial.size() + " unprocessed");
             for (ColorFrequency colorFrequencyPartial : colorFrequenciesPartial) {
-                if (!resultSet.contains(colorFrequencyPartial)) {
-                    resultSet.add(colorFrequencyPartial);
+                String colorHex = colorFrequencyPartial.getColorHex();
+                if (resultMap.containsKey(colorHex)) {
+                    resultMap.get(colorHex).mergeWith(colorFrequencyPartial);
                 } else {
-                    for (ColorFrequency colorFrequencyTotal : resultSet) {
-                        if (colorFrequencyPartial.getColor().equals(colorFrequencyTotal.getColor())) {
-                            colorFrequencyTotal.addNumberOfOccurrences(colorFrequencyPartial.getNumberOfOccurrences());
-                        }
-                    }
+                    resultMap.put(colorHex, colorFrequencyPartial);
                 }
             }
-            logger.info("Merged results with new total size " + resultSet.size());
+            logger.fine("Merged results with new total size " + resultMap.size());
         }
 
         service.shutdown();
 
-        SortedSet<ColorFrequency> sortedResultSet = new TreeSet<>(new ColorFrequency.ColorFrequencyHexStringComparator());
-        sortedResultSet.addAll(resultSet);
+        SortedSet<ColorFrequency> sortedResultSet = new TreeSet<>(new ColorFrequency.ColorFrequencyReverseComparator());
+        sortedResultSet.addAll(resultMap.values());
+
+        logger.info("Finished computation in " + (System.currentTimeMillis() - startTime) + " ms.");
 
         return sortedResultSet;
     }
 
-    private static class FrequencyCalculator implements Callable<Set<ColorFrequency>> {
+    private static class FrequencyCalculatorThread implements Callable<Set<ColorFrequency>> {
 
         private final BufferedImage image;
         private final int threadNumber;
         private final int threadTotal;
 
-        private FrequencyCalculator(BufferedImage image, int threadNumber, int threadTotal) {
+        private FrequencyCalculatorThread(BufferedImage image, int threadNumber, int threadTotal) {
             this.image = image;
             this.threadNumber = threadNumber;
             this.threadTotal = threadTotal;
-
-
         }
 
         @Override
         public Set<ColorFrequency> call() throws Exception {
-            logger.info("Starting thread number " + threadNumber + "/" + threadTotal);
+            logger.fine("Starting thread number " + threadNumber + "/" + threadTotal);
             Set<ColorFrequency> frequencies = new HashSet<>();
 
             Map<Color, Integer> frequencyMap = new TreeMap<>(new ColorComparator());
@@ -115,7 +118,7 @@ public class FrequencyAnalyzerService {
                 frequencies.add(new ColorFrequency(color, frequencyMap.get(color), totalPixelCount));
             }
 
-            logger.info("Finished processing thread number " + threadNumber + "/" + threadTotal);
+            logger.fine("Finished processing thread number " + threadNumber + "/" + threadTotal);
 
             return frequencies;
         }

@@ -43,8 +43,8 @@ public class ColorFrequency {
         return numberOfOccurrences;
     }
 
-    public void addNumberOfOccurrences(long numberOfOccurrences) {
-        this.numberOfOccurrences += numberOfOccurrences;
+    public void mergeWith(ColorFrequency colorFrequency) {
+        this.numberOfOccurrences += colorFrequency.getNumberOfOccurrences();
     }
 
     public Color getColor() {
@@ -55,28 +55,15 @@ public class ColorFrequency {
         return ImageService.toHex(color.getRed(), color.getGreen(), color.getBlue());
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        ColorFrequency that = (ColorFrequency) o;
-
-        if (color != null ? !color.equals(that.color) : that.color != null) return false;
-
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        return color != null ? color.hashCode() : 0;
-    }
-
-    public static class ColorFrequencyHexStringComparator implements Comparator<ColorFrequency> {
+    public static class ColorFrequencyReverseComparator implements Comparator<ColorFrequency> {
 
         @Override
         public int compare(ColorFrequency o1, ColorFrequency o2) {
-            return o1.getColorHex().compareTo(o2.getColorHex());
+            if (o2.calculateFrequency() != o1.calculateFrequency()) {
+                return Double.compare(o2.calculateFrequency(), o1.calculateFrequency());
+            } else {
+                return o2.getColorHex().compareTo(o1.getColorHex());
+            }
         }
     }
 

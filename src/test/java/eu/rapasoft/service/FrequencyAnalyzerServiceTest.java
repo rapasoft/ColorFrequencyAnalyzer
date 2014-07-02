@@ -24,7 +24,7 @@ public class FrequencyAnalyzerServiceTest {
     }
 
     @Test
-    public void testComputeFrequencies() throws ImageFileException {
+    public void testComputeFrequenciesQuarters() throws ImageFileException {
         Set<ColorFrequency> colorFrequencySet = assertCorrectComputation("./test_img.png");
 
         Assert.assertFalse(colorFrequencySet.isEmpty());
@@ -36,7 +36,19 @@ public class FrequencyAnalyzerServiceTest {
     }
 
     @Test
-    public void testComputingAlgorithmSpeed() throws ImageFileException {
+    public void testComputeFrequenciesCross() throws ImageFileException {
+        Set<ColorFrequency> colorFrequencySet = assertCorrectComputation("./test_img2.png");
+
+        Assert.assertFalse(colorFrequencySet.isEmpty());
+        Assert.assertEquals(4, colorFrequencySet.size());
+
+        for (ColorFrequency colorFrequency : colorFrequencySet) {
+            Assert.assertEquals(colorFrequency.getColorHex() + ": " + colorFrequency.calculateFrequency(), 25.0, colorFrequency.calculateFrequency(), 5);
+        }
+    }
+
+    @Test
+    public void testMultipleColorsPng() throws ImageFileException {
         assertCorrectComputation("./wordle_lastfm_chart.PNG");
     }
 
@@ -46,21 +58,25 @@ public class FrequencyAnalyzerServiceTest {
     }
 
     @Test
-    public void testColorfullJpg() throws ImageFileException {
+    public void testColorfulJpg() throws ImageFileException {
         assertCorrectComputation("./Tulips.jpg");
     }
 
     private Set<ColorFrequency> assertCorrectComputation(String fileName) throws ImageFileException {
         URL filePath = getClass().getClassLoader().getResource(fileName);
         Assert.assertNotNull(filePath);
-        long startTime = System.currentTimeMillis();
         Set<ColorFrequency> colorFrequencySet = frequencyAnalyzerService.computeFrequencies(new File(filePath.getPath()));
-        long estimatedTime = System.currentTimeMillis() - startTime;
+
+        double total = 0;
+
+        for (ColorFrequency colorFrequency : colorFrequencySet) {
+            total += colorFrequency.calculateFrequency();
+        }
+
+        Assert.assertEquals("Total should be 100% (more or less).", 100.0, total, 1.0);
 
         Assert.assertNotNull(colorFrequencySet);
         Assert.assertFalse(colorFrequencySet.isEmpty());
-
-        System.out.println(fileName + ": " + estimatedTime + " ms");
 
         return colorFrequencySet;
     }
