@@ -5,11 +5,12 @@ import eu.rapasoft.service.ImageService;
 import java.awt.*;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.Comparator;
 
 /**
  * @author Pavol Rajzak, www.rapasoft.eu
  */
-public class ColorFrequency implements Comparable<ColorFrequency> {
+public class ColorFrequency {
 
     private Color color;
     private long numberOfOccurrences;
@@ -21,10 +22,16 @@ public class ColorFrequency implements Comparable<ColorFrequency> {
         this.totalPixelCount = totalPixelCount;
     }
 
+    /**
+     * @return The percentage of color in the whole image.
+     */
     public double calculateFrequency() {
         return (numberOfOccurrences / (double) totalPixelCount) * 100;
     }
 
+    /**
+     * @return String representation of {@link ColorFrequency#calculateFrequency()} as a String rounded up to 2 decimals.
+     */
     public String getFrequencyInPercentage() {
         NumberFormat numberFormat = new DecimalFormat();
         numberFormat.setMaximumFractionDigits(2);
@@ -32,35 +39,12 @@ public class ColorFrequency implements Comparable<ColorFrequency> {
         return numberFormat.format(calculateFrequency()) + "%";
     }
 
-    public double getNumberOfOccurrences() {
+    public long getNumberOfOccurrences() {
         return numberOfOccurrences;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        ColorFrequency that = (ColorFrequency) o;
-
-        if (numberOfOccurrences != that.numberOfOccurrences) return false;
-        if (totalPixelCount != that.totalPixelCount) return false;
-        if (color != null ? !color.equals(that.color) : that.color != null) return false;
-
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = color != null ? color.hashCode() : 0;
-        result = 31 * result + (int) (numberOfOccurrences ^ (numberOfOccurrences >>> 32));
-        result = 31 * result + (int) (totalPixelCount ^ (totalPixelCount >>> 32));
-        return result;
-    }
-
-    @Override
-    public int compareTo(ColorFrequency other) {
-        return Double.compare(this.getNumberOfOccurrences(), other.getNumberOfOccurrences());
+    public void addNumberOfOccurrences(long numberOfOccurrences) {
+        this.numberOfOccurrences += numberOfOccurrences;
     }
 
     public Color getColor() {
@@ -70,4 +54,30 @@ public class ColorFrequency implements Comparable<ColorFrequency> {
     public String getColorHex() {
         return ImageService.toHex(color.getRed(), color.getGreen(), color.getBlue());
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ColorFrequency that = (ColorFrequency) o;
+
+        if (color != null ? !color.equals(that.color) : that.color != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return color != null ? color.hashCode() : 0;
+    }
+
+    public static class ColorFrequencyHexStringComparator implements Comparator<ColorFrequency> {
+
+        @Override
+        public int compare(ColorFrequency o1, ColorFrequency o2) {
+            return o1.getColorHex().compareTo(o2.getColorHex());
+        }
+    }
+
 }
